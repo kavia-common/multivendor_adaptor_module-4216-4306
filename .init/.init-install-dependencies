@@ -1,0 +1,4 @@
+{
+    "command": "cd db_visualizer && npm install",
+    "working_directory": "/home/kavia/workspace/code-generation/multivendor_adaptor_module-4216-4306/Database"
+}
