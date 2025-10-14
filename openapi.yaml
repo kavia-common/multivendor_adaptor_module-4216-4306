@@ -1,0 +1,137 @@
+openapi: 3.0.3
+info:
+  title: Multivendor Adapter API
+  version: 0.1.0
+  description: REST API for models, mappings, provisioning, and auth with RBAC.
+servers:
+  - url: http://localhost:5000
+components:
+  securitySchemes:
+    sessionToken:
+      type: apiKey
+      in: header
+      name: X-Session-Token
+  schemas:
+    Error:
+      type: object
+      required: [code, message]
+      properties:
+        code: { type: string }
+        message: { type: string }
+        details: { type: object }
+paths:
+  /api/auth/login:
+    post:
+      summary: Login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [username, password]
+              properties:
+                username: { type: string }
+                password: { type: string }
+      responses:
+        '200': { description: OK }
+        '401': { description: Unauthorized }
+  /api/auth/logout:
+    post:
+      summary: Logout
+      security: [{ sessionToken: [] }]
+      responses:
+        '200': { description: OK }
+  /api/models:
+    get:
+      summary: List models
+      security: [{ sessionToken: [] }]
+      responses:
+        '200': { description: OK }
+    post:
+      summary: Create model
+      security: [{ sessionToken: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [type, name, data]
+              properties:
+                type: { type: string, enum: [NB, SB] }
+                name: { type: string }
+                data: { type: object }
+                version: { type: string }
+      responses:
+        '201': { description: Created }
+  /api/mappings:
+    get:
+      summary: List mappings
+      security: [{ sessionToken: [] }]
+      responses:
+        '200': { description: OK }
+    post:
+      summary: Create mapping
+      security: [{ sessionToken: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [nb_model_id, sb_model_id, mapping_data]
+              properties:
+                nb_model_id: { type: integer }
+                sb_model_id: { type: integer }
+                mapping_data: { type: object }
+      responses:
+        '201': { description: Created }
+  /api/provision:
+    post:
+      summary: Provision
+      security: [{ sessionToken: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [mapping_id]
+              properties:
+                mapping_id: { type: integer }
+                nb_model_id: { type: integer }
+                nb_inline: { type: object }
+      responses:
+        '200': { description: OK }
+        '500': { description: Failure }
+  /api/admin/users:
+    get:
+      summary: List users
+      security: [{ sessionToken: [] }]
+      responses:
+        '200': { description: OK }
+  /api/admin/roles:
+    get:
+      summary: List roles
+      security: [{ sessionToken: [] }]
+      responses:
+        '200': { description: OK }
+  /api/admin/sessions:
+    get:
+      summary: List sessions
+      security: [{ sessionToken: [] }]
+      responses:
+        '200': { description: OK }
+  /api/admin/audit_logs:
+    get:
+      summary: List audit logs
+      security: [{ sessionToken: [] }]
+      responses:
+        '200': { description: OK }
+  /api/admin/versions:
+    get:
+      summary: List versions
+      security: [{ sessionToken: [] }]
+      responses:
+        '200': { description: OK }
